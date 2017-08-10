@@ -9,9 +9,9 @@ namespace Comely\Framework\Kernel;
  */
 interface Constants
 {
-    /** string Version (Major.Minor.Release-Suffix) */
+    /** string Version (Major.Minor.Release/Patch-Suffix) */
     const VERSION   =   "1.0.0-RC12";
-    /** int Version (Major * 10000 + Minor * 100 + Release) */
+    /** int Version (Major * 10000 + Minor * 100 + Patch) */
     const VERSION_ID    =   10000;
 
     const DS    =   DIRECTORY_SEPARATOR;

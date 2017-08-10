@@ -8,6 +8,10 @@ use Comely\Framework\Kernel\Config\Prototype\Site;
 use Comely\Framework\KernelException;
 use Comely\IO\Yaml\Yaml;
 
+/**
+ * Class Config
+ * @package Comely\Framework\Kernel
+ */
 class Config
 {
     /** @var App|null */

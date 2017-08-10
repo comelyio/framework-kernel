@@ -19,7 +19,10 @@ class Client
     public $port;
     /** @var string */
     public $userAgent;
-    
+
+    /**
+     * Client constructor.
+     */
     public function __construct()
     {
         $this->https    =   !empty($_SERVER["HTTPS"]) ? true : false;

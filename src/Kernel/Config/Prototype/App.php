@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-namespace Comely\Framework\Kernel\Config\Prototype {
-
+namespace Comely\Framework\Kernel\Config\Prototype
+{
     use Comely\Framework\Kernel\Config\Prototype\App\Cache;
     use Comely\Framework\Kernel\Config\Prototype\App\ErrorHandler;
     use Comely\Framework\Kernel\Config\Prototype\App\Knit;
@@ -11,6 +11,10 @@ namespace Comely\Framework\Kernel\Config\Prototype {
     use Comely\Framework\Kernel\Config\Prototype\App\Sessions;
     use Comely\Framework\Kernel\Config\Prototype\App\Translations;
 
+    /**
+     * Class App
+     * @package Comely\Framework\Kernel\Config\Prototype
+     */
     class App
     {
         /** @var Cache */
@@ -27,18 +31,22 @@ namespace Comely\Framework\Kernel\Config\Prototype {
         public $sessions;
         /** @var Translations */
         public $translations;
-
         /** @var null|string */
         public $timeZone;
     }
 }
 
-namespace Comely\Framework\Kernel\Config\Prototype\App {
-
+namespace Comely\Framework\Kernel\Config\Prototype\App
+{
     use Comely\Framework\Kernel\Config\Prototype\App\ErrorHandler\Screen;
     use Comely\Framework\Kernel\Config\Prototype\App\Mailer\SMTP;
+    use Comely\Framework\Kernel\Config\Prototype\App\Security\Firewall;
     use Comely\Framework\Kernel\Config\Prototype\App\Sessions\Cookie;
 
+    /**
+     * Class Cache
+     * @package Comely\Framework\Kernel\Config\Prototype\App
+     */
     class Cache
     {
         /** @var bool */
@@ -53,6 +61,10 @@ namespace Comely\Framework\Kernel\Config\Prototype\App {
         public $terminate;
     }
 
+    /**
+     * Class Mailer
+     * @package Comely\Framework\Kernel\Config\Prototype\App
+     */
     class Mailer
     {
         /** @var string */
@@ -65,6 +77,10 @@ namespace Comely\Framework\Kernel\Config\Prototype\App {
         public $smtp;
     }
 
+    /**
+     * Class ErrorHandler
+     * @package Comely\Framework\Kernel\Config\Prototype\App
+     */
     class ErrorHandler
     {
         /** @var string */
@@ -75,6 +91,10 @@ namespace Comely\Framework\Kernel\Config\Prototype\App {
         public $screen;
     }
 
+    /**
+     * Class Knit
+     * @package Comely\Framework\Kernel\Config\Prototype\App
+     */
     class Knit
     {
         /** @var string */
@@ -83,14 +103,24 @@ namespace Comely\Framework\Kernel\Config\Prototype\App {
         public $caching;
     }
 
+    /**
+     * Class Security
+     * @package Comely\Framework\Kernel\Config\Prototype\App
+     */
     class Security
     {
         /** @var string */
         public $cipherKey;
         /** @var string */
         public $defaultHashAlgo;
+        /** @var Firewall */
+        public $firewall;
     }
 
+    /**
+     * Class Sessions
+     * @package Comely\Framework\Kernel\Config\Prototype\App
+     */
     class Sessions
     {
         /** @var bool */
@@ -111,6 +141,10 @@ namespace Comely\Framework\Kernel\Config\Prototype\App {
         public $hashCost;
     }
 
+    /**
+     * Class Translations
+     * @package Comely\Framework\Kernel\Config\Prototype\App
+     */
     class Translations
     {
         /** @var string */
@@ -122,7 +156,31 @@ namespace Comely\Framework\Kernel\Config\Prototype\App {
     }
 }
 
-namespace Comely\Framework\Kernel\Config\Prototype\App\Mailer {
+namespace Comely\Framework\Kernel\Config\Prototype\App\Security
+{
+    /**
+     * Class Firewall
+     * @package Comely\Framework\Kernel\Config\Prototype\App\Security
+     */
+    class Firewall
+    {
+        /** @var bool */
+        public $status;
+        /** @var string */
+        public $dbPath;
+        /** @var bool */
+        public $useCache;
+        /** @var int */
+        public $rateLimiting;
+    }
+}
+
+namespace Comely\Framework\Kernel\Config\Prototype\App\Mailer
+{
+    /**
+     * Class SMTP
+     * @package Comely\Framework\Kernel\Config\Prototype\App\Mailer
+     */
     class SMTP
     {
         /** @var string */
@@ -144,7 +202,12 @@ namespace Comely\Framework\Kernel\Config\Prototype\App\Mailer {
     }
 }
 
-namespace Comely\Framework\Kernel\Config\Prototype\App\ErrorHandler {
+namespace Comely\Framework\Kernel\Config\Prototype\App\ErrorHandler
+{
+    /**
+     * Class Screen
+     * @package Comely\Framework\Kernel\Config\Prototype\App\ErrorHandler
+     */
     class Screen
     {
         /** @var bool */
@@ -156,8 +219,14 @@ namespace Comely\Framework\Kernel\Config\Prototype\App\ErrorHandler {
     }
 }
 
-namespace Comely\Framework\Kernel\Config\Prototype\App\Sessions {
-    class Cookie {
+namespace Comely\Framework\Kernel\Config\Prototype\App\Sessions
+{
+    /**
+     * Class Cookie
+     * @package Comely\Framework\Kernel\Config\Prototype\App\Sessions
+     */
+    class Cookie
+    {
         /** @var null|string|int */
         public $expire;
         /** @var null|string */

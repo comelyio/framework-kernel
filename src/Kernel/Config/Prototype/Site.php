@@ -1,7 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Comely\Framework\Kernel\Config\Prototype {
+namespace Comely\Framework\Kernel\Config\Prototype
+{
+    /**
+     * Class Site
+     * @package Comely\Framework\Kernel\Config\Prototype
+     */
     class Site
     {
         /** @var null|string */
