@@ -12,7 +12,7 @@ use Comely\Framework\KernelException;
 class CliException extends KernelException
 {
     /** @var string */
-    public static $componentId  =   "Comely\\Framework\\Kernel\\Cli";
+    public static $componentId  =   'Comely\Framework\Kernel\Cli';
 
     /**
      * @param string $job

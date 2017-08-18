@@ -12,7 +12,7 @@ use Comely\Framework\KernelException;
 class DateTimeException extends KernelException
 {
     /** @var string */
-    protected static $componentId =   "Comely\\Framework\\Kernel\\DateTime";
+    protected static $componentId   = 'Comely\Framework\Kernel\DateTime';
 
     /**
      * @param string $method

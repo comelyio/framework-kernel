@@ -68,6 +68,37 @@ abstract class AbstractController implements ControllerInterface
     }
 
     /**
+     * @param string $message
+     * @throws HttpException
+     */
+    public function setFlashMessage(string $message)
+    {
+        if(!$this->app->hasSession()) {
+            throw new HttpException(__METHOD__, 'Flash message requires Session component');
+        }
+
+        $this->app->getSession()->getBags()
+            ->set("KernelFlashMessage", $message);
+    }
+
+    /**
+     * @return null|string
+     * @throws HttpException
+     */
+    public function getFlashMessage()
+    {
+        if(!$this->app->hasSession()) {
+            throw new HttpException(__METHOD__, 'Flash message requires Session component');
+        }
+
+        $sessionBags    =   $this->app->getSession()->getBags();
+        $flashMessage   =   $sessionBags->get("KernelFlashMessage");
+        $sessionBags->remove("KernelFlashMessage");
+
+        return is_string($flashMessage) ? $flashMessage : null;
+    }
+
+    /**
      * @param Knit $knit
      * @param string $tpl
      * @param string $param
@@ -95,6 +126,14 @@ abstract class AbstractController implements ControllerInterface
         $knit->assign("config", [
             "site" => $this->app->config()->getNode("site")
         ]);
+
+        // Flash message
+        if($this->app->hasSession()) {
+            $flashMessage   =   $this->getFlashMessage();
+            if($flashMessage) {
+                $knit->assign("flashMessage", $flashMessage);
+            }
+        }
 
         // Prepare template and set in Response object
         $template   =   $knit->prepare($tpl);

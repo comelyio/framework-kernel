@@ -18,6 +18,8 @@ class Memory
 
     /** @var null|Cache */
     private $cache;
+    /** @var bool */
+    private $cacheStatus;
     /** @var Repository */
     private $repo;
 
@@ -39,6 +41,7 @@ class Memory
     private function __construct()
     {
         $this->repo =   new Repository();
+        $this->cacheStatus  =   false;
     }
 
     /**
@@ -47,7 +50,19 @@ class Memory
      */
     public function setCache(Cache $cache) : self
     {
-        //$this->cache    =   $cache;
+        $this->cache    =   $cache;
+        $this->cacheStatus  =   true;
+        return $this;
+    }
+
+    /**
+     * Enable/disable use of Cache Engine
+     * @param bool $status
+     * @return Memory
+     */
+    public function useCache(bool $status) : self
+    {
+        $this->cacheStatus  =   $status;
         return $this;
     }
 
@@ -69,9 +84,11 @@ class Memory
 
         // Check in cache
         if(isset($this->cache)) {
-            $cached =   $this->cache->get($key);
-            if(is_object($cached)   &&  is_a($cached, $instanceOf)) {
-                return $cached;
+            if($this->cacheStatus   === true) {
+                $cached = $this->cache->get($key);
+                if(is_object($cached)   &&  is_a($cached, $instanceOf)) {
+                    return $cached;
+                }
             }
         }
 
@@ -99,10 +116,12 @@ class Memory
 
         $this->repo->push($object, $key);
         if($this->cache) {
-            try {
-                $this->cache->set($key, clone $object);
-            } catch (CacheException $e) {
-                trigger_error($e->getParsed(), E_USER_WARNING);
+            if($this->cacheStatus   === true) {
+                try {
+                    $this->cache->set($key, clone $object);
+                } catch (CacheException $e) {
+                    trigger_error($e->getParsed(), E_USER_WARNING);
+                }
             }
         }
 

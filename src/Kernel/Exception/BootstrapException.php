@@ -12,7 +12,7 @@ use Comely\Framework\KernelException;
 class BootstrapException extends KernelException
 {
     /** @var string */
-    protected static $componentId =   "Comely\\Framework\\Kernel\\Bootstrapper";
+    protected static $componentId =   'Comely\Framework\Kernel\Bootstrapper';
 
     /**
      * @return BootstrapException

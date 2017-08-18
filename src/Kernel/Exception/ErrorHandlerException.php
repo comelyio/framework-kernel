@@ -12,7 +12,7 @@ use Comely\Framework\KernelException;
 class ErrorHandlerException extends KernelException
 {
     /** @var string */
-    protected static $componentId   =   "Comely\\Framework\\Kernel\\ErrorHandler";
+    protected static $componentId   =   'Comely\Framework\Kernel\ErrorHandler';
 
     /**
      * @param string $method
