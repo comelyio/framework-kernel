@@ -95,7 +95,7 @@ class Memory
         if(is_callable($notFound)) {
             $callBack   =   call_user_func($notFound);
             if(is_object($callBack)) {
-                $this->set($key, clone $callBack);
+                $this->set($key, $callBack);
                 return $callBack;
             }
         }
