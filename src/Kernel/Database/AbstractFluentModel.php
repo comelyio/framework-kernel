@@ -41,6 +41,15 @@ abstract class AbstractFluentModel extends Fluent implements \Serializable
     }
 
     /**
+     * @return AbstractFluentModel
+     */
+    final public function removeKernelInstance() : self
+    {
+        unset($this->app);
+        return $this;
+    }
+
+    /**
      * @return string
      */
     final public function serialize()
