@@ -27,7 +27,7 @@ class Setup
      */
     public function __construct()
     {
-        $this->environment  =   "dev";
+        $this->environment  =   "cli";
         $this->force    =   false;
         $this->cachedConfiguration  =   true;
         $this->noSleep  =   false;

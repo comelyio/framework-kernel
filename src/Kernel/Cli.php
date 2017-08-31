@@ -50,7 +50,7 @@ class Cli
         $this->success  =   false;
 
         // Check if Job class exists
-        $this->job  =   sprintf('bin\\%s', strtolower($job));
+        $this->job  =   sprintf('bin\%s', strtolower($job));
 
         // CLI setup
         $this->setup    =   new Setup();
@@ -83,7 +83,7 @@ class Cli
                     break;
                 case "-h":
                 case "--help":
-                    $this->job  =   "bin\\help";
+                    $this->job  =   "bin\help";
                     break;
             }
         } unset($arg, $flag, $value);
@@ -179,7 +179,7 @@ class Cli
         $jobClass   =   (string) $this->job;
         VividShell::Print("Loading Job: ", $this->sleep(0), null, "");
         VividShell::Repeat(".", rand(5, 10), $this->sleep(150), "");
-        if(!class_exists($jobClass)    ||  !is_a($jobClass, __NAMESPACE__ . "\\Cli\\AbstractJob", true)) {
+        if(!class_exists($jobClass)    ||  !is_a($jobClass, __NAMESPACE__ . '\Cli\AbstractJob', true)) {
             VividShell::Print(" {red}{b}{invert} %s {/}", $this->sleep(0), [$jobClass]);
             VividShell::Print("");
             throw CliException::jobNotFound($jobClass);

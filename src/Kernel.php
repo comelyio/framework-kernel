@@ -739,4 +739,12 @@ class Kernel extends Bootstrapper
         // Return instance of Comely\IO\Database\Database
         return $db;
     }
+
+    /**
+     * @return string
+     */
+    public function getEnv() : string
+    {
+        return $this->env;
+    }
 }
