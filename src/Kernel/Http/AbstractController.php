@@ -213,4 +213,15 @@ abstract class AbstractController implements ControllerInterface
             }, $this->app->errorHandler()->fetchAll()));
         }
     }
+
+    /**
+     * Improvised finish method that makes it optional to have finish methods for controllers extending this class
+     * If a method named "finishCallback" exists, it will be called as the request finishes.
+     */
+    public function finish()
+    {
+        if(method_exists($this, "finishCallback")) {
+            $this->finishCallback();
+        }
+    }
 }

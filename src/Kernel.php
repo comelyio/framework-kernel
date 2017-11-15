@@ -44,18 +44,20 @@ class Kernel extends Bootstrapper
     protected $security;
     /** @var string */
     protected $env;
+    /** @var bool */
+    protected $debug;
     /** @var array */
     protected $databases;
     /** @var Memory */
     protected $memory;
 
     /**
-     * Framework Kernel constructor.
-     *
+     * Kernel constructor.
      * @param array $components
      * @param string $env
+     * @param bool $debug
      */
-    public function __construct(array $components, string $env)
+    public function __construct(array $components, string $env, bool $debug = false)
     {
         // Create a private dependency injection container
         $this->container    =   new Container();
@@ -75,6 +77,7 @@ class Kernel extends Bootstrapper
         // Set variables
         $this->dateTime =   new DateTime();
         $this->env  =   $env;
+        $this->debug    =   $debug;
         $this->setRootPath(dirname(dirname(dirname(dirname(__DIR__)))));
         $this->errorHandler =   new ErrorHandler($this);
 
@@ -82,6 +85,14 @@ class Kernel extends Bootstrapper
         $this->disks    =   new Repository();
         $this->container->add("disks", $this->disks);
         $this->disks->push(new Disk($this->rootPath . self::DS . self::CACHE_PATH), "cache");
+    }
+
+    /**
+     * @return bool
+     */
+    public function debugging() : bool
+    {
+        return $this->debug;
     }
 
     /**
