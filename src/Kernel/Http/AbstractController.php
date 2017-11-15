@@ -212,6 +212,8 @@ abstract class AbstractController implements ControllerInterface
                 return $error["formatted"];
             }, $this->app->errorHandler()->fetchAll()));
         }
+
+        $this->finish(); // Finish request/response
     }
 
     /**
