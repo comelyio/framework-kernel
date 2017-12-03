@@ -13,6 +13,7 @@ use Comely\IO\Emails\Mailer;
 use Comely\IO\Filesystem\Disk;
 use Comely\IO\Filesystem\Exception\DiskException;
 use Comely\IO\i18n\Translator;
+use Comely\IO\Logger\Logger;
 use Comely\IO\Security\Cipher;
 use Comely\IO\Session\Session;
 use Comely\IO\Session\Storage;
@@ -39,6 +40,8 @@ abstract class Bootstrapper implements Constants
     protected $session;
     /** @var null|Translator */
     protected $translator;
+    /** @var null|Logger */
+    protected $logger;
     /** @var null|Knit */
     protected $knit;
     /** @var string|null */
@@ -363,6 +366,11 @@ abstract class Bootstrapper implements Constants
         } catch(\ComelyException $e) {
             throw new BootstrapException(__METHOD__, $e->getMessage(), $e->getCode());
         }
+    }
+
+    public function registerLogger()
+    {
+        // Todo: Register logger component
     }
 
     /**

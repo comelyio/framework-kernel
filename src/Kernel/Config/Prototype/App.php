@@ -154,6 +154,18 @@ namespace Comely\Framework\Kernel\Config\Prototype\App
         /** @var bool */
         public $cache;
     }
+
+    /**
+     * Class Logger
+     * @package Comely\Framework\Kernel\Config\Prototype\App
+     */
+    class Logger
+    {
+        /** @var null|string */
+        public $storagePath;
+        /** @var null|string */
+        public $storageDb;
+    }
 }
 
 namespace Comely\Framework\Kernel\Config\Prototype\App\Security

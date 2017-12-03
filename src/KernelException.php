@@ -9,7 +9,7 @@ namespace Comely\Framework;
  */
 class KernelException extends \ComelyException
 {
-    protected static $componentId    =   "Comely\\Framework\\Kernel";
+    protected static $componentId   =   'Comely\Framework\Kernel';
 
     /**
      * @return KernelException
@@ -57,7 +57,7 @@ class KernelException extends \ComelyException
     public static function dbNotFound(string $id) : self
     {
         return new self(
-            "Comely\\Framework\\Kernel::getDb",
+            'Comely\Framework\Kernel::getDb',
             sprintf('Database with id "%1$s" not found', $id),
             2005
         );
