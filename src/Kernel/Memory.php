@@ -20,6 +20,10 @@ class Memory
     private $cache;
     /** @var bool */
     private $cacheStatus;
+    /** @var int */
+    private $cacheTTL;
+    /** @var int */
+    private $cacheTempTTL;
     /** @var Repository */
     private $repo;
 
@@ -42,6 +46,8 @@ class Memory
     {
         $this->repo =   new Repository();
         $this->cacheStatus  =   false;
+        $this->cacheTTL =   0;
+        $this->cacheTempTTL =   0;
     }
 
     /**
@@ -56,17 +62,36 @@ class Memory
     }
 
     /**
-     * Enable/disable use of Cache Engine
-     * @param bool $status
+     * Set default "time to live" value in seconds for cached objects
+     * @param int $seconds
      * @return Memory
      */
-    public function useCache(bool $status) : self
+    public function setCacheTTL(int $seconds = 0) : self
     {
-        $this->cacheStatus  =   $status;
+        $this->cacheTTL =   $seconds;
         return $this;
     }
 
     /**
+     * Enable/disable use of Cache Engine
+     * Set temp. TTL (time to live) value for next caching object
+     * @param bool $status
+     * @param int $ttl
+     * @return Memory
+     */
+    public function useCache(bool $status, int $ttl = 0) : self
+    {
+        $this->cacheStatus  =   $status;
+        if($status) {
+            $this->cacheTempTTL =   $ttl    >   0 ? $ttl : $this->cacheTTL;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Finds object in run-time memory, then cache, otherwise calls a supplied callback function which should
+     * return object to be stored in memory
      * @param string $key
      * @param string $instanceOf
      * @param callable|null $notFound
@@ -100,10 +125,12 @@ class Memory
             }
         }
 
+        $this->cacheTempTTL =   0;
         return null;
     }
 
     /**
+     * Sets object in run-time memory and cache engine
      * @param string $key
      * @param $object
      * @return bool
@@ -118,13 +145,15 @@ class Memory
         if($this->cache) {
             if($this->cacheStatus   === true) {
                 try {
-                    $this->cache->set($key, clone $object);
+                    $ttl    =   $this->cacheTempTTL > 0 ? $this->cacheTempTTL : $this->cacheTTL;
+                    $this->cache->set($key, clone $object, $ttl);
                 } catch (CacheException $e) {
                     trigger_error($e->getParsed(), E_USER_WARNING);
                 }
             }
         }
 
+        $this->cacheTempTTL =   0;
         return true;
     }
 }
