@@ -10,9 +10,9 @@ namespace Comely\Framework\Kernel;
 interface Constants
 {
     /** string Version (Major.Minor.Patch) */
-    const VERSION   =   "1.1.1";
+    const VERSION   =   "1.1.2";
     /** int Version (Major * 10000 + Minor * 100 + Patch) */
-    const VERSION_ID    =   10101;
+    const VERSION_ID    =   10102;
 
     const DS    =   DIRECTORY_SEPARATOR;
     const EOL   =   PHP_EOL;
