@@ -112,6 +112,7 @@ class Memory
             if($this->cacheStatus   === true) {
                 $cached = $this->cache->get($key);
                 if(is_object($cached)   &&  is_a($cached, $instanceOf)) {
+                    $this->repo->push($cached, $key);
                     return $cached;
                 }
             }
