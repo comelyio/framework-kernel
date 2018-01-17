@@ -11,15 +11,15 @@ use Comely\Framework\Kernel\Memory;
 class Query
 {
     /** @var bool */
-    public $useCache;
+    public $_useCache;
     /** @var int */
-    public $cacheTTL;
+    public $_cacheTTL;
     /** @var null|string */
     public $key;
     /** @var null|string */
     public $instanceOf;
     /** @var null|callable */
-    public $callback;
+    public $_callback;
 
     /**
      * Query constructor.
@@ -28,8 +28,8 @@ class Query
      */
     public function __construct(string $key, string $instanceOf)
     {
-        $this->useCache =   false;
-        $this->cacheTTL =   0;
+        $this->_useCache    =   false;
+        $this->_cacheTTL    =   0;
         $this->key  =   $key;
         $this->instanceOf   =   $instanceOf;
     }
@@ -40,8 +40,18 @@ class Query
      */
     public function cache(int $ttl = 0) : self
     {
-        $this->useCache =   true;
-        $this->cacheTTL =   $ttl;
+        $this->_useCache    =   true;
+        $this->_cacheTTL    =   $ttl;
+        return $this;
+    }
+
+    /**
+     * @param int $ttl
+     * @return Query
+     */
+    public function useCache(int $ttl = 0) : self
+    {
+        $this->cache($ttl);
         return $this;
     }
 
@@ -52,19 +62,24 @@ class Query
     public function callback(callable $callback) : self
     {
         if(is_callable($callback)) {
-            $this->callback =   $callback;
+            $this->_callback    =   $callback;
         }
 
         return $this;
     }
 
     /**
+     * @param callable|null $callback
      * @return mixed|null
      * @throws \Comely\IO\Cache\CacheException
      * @throws \Comely\IO\DependencyInjection\Exception\RepositoryException
      */
-    public function fetch()
+    public function fetch(callable $callback = null)
     {
+        if($callback) {
+            $this->callback($callback);
+        }
+
         return Memory::getInstance()->find($this);
     }
 }

@@ -80,7 +80,7 @@ class Memory
 
         // Check in cache
         if(isset($this->cache)) {
-            if($query->useCache === true) {
+            if($query->_useCache    === true) {
                 $cached =   $this->cache->get($query->key);
                 if(is_object($cached)   &&  is_a($cached, $query->instanceOf)) {
                     $this->repo->push($cached, $query->key); // Save in runtime memory
@@ -90,10 +90,10 @@ class Memory
         }
 
         // Not found so far, proceed to callback
-        if(is_callable($query->callback)) {
-            $callBack   =   call_user_func($query->callback);
+        if(is_callable($query->_callback)) {
+            $callBack   =   call_user_func($query->_callback);
             if(is_object($callBack)) {
-                $this->set($query->key, $callBack, $query->useCache, $query->cacheTTL);
+                $this->set($query->key, $callBack, $query->_useCache, $query->_cacheTTL);
                 return $callBack;
             }
         }
