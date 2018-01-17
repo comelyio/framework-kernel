@@ -12,7 +12,7 @@ interface Constants
     /** string Version (Major.Minor.Patch) */
     const VERSION   =   "1.2.1";
     /** int Version (Major * 10000 + Minor * 100 + Patch) */
-    const VERSION_ID    =   10200;
+    const VERSION_ID    =   10201;
 
     const DS    =   DIRECTORY_SEPARATOR;
     const EOL   =   PHP_EOL;
