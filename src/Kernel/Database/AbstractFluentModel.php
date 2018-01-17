@@ -135,8 +135,8 @@ abstract class AbstractFluentModel extends Fluent implements \Serializable
             /** @var $prop \ReflectionProperty */
             foreach($reflect->getProperties() as $prop) {
                 $key    =   $prop->getName();
-                if(!is_scalar($reflect->$key)) {
-                    $this->__cleanse($reflect->$key);
+                if(!is_scalar($var->$key)) {
+                    $this->__cleanse($var->$key);
                 }
             };
         } elseif(is_array($var)) {
