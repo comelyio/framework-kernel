@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Comely\Framework\Kernel;
 
+use Comely\Framework\Kernel\Memory\Query;
 use Comely\IO\Cache\Cache;
 use Comely\IO\Cache\CacheException;
 use Comely\IO\DependencyInjection\Repository;
@@ -18,12 +19,6 @@ class Memory
 
     /** @var null|Cache */
     private $cache;
-    /** @var bool */
-    private $cacheStatus;
-    /** @var int */
-    private $cacheTTL;
-    /** @var int */
-    private $cacheTempTTL;
     /** @var Repository */
     private $repo;
 
@@ -45,9 +40,6 @@ class Memory
     private function __construct()
     {
         $this->repo =   new Repository();
-        $this->cacheStatus  =   false;
-        $this->cacheTTL =   0;
-        $this->cacheTempTTL =   0;
     }
 
     /**
@@ -57,104 +49,86 @@ class Memory
     public function setCache(Cache $cache) : self
     {
         $this->cache    =   $cache;
-        $this->cacheStatus  =   true;
         return $this;
     }
 
     /**
-     * Set default "time to live" value in seconds for cached objects
-     * @param int $seconds
-     * @return Memory
-     */
-    public function setCacheTTL(int $seconds = 0) : self
-    {
-        $this->cacheTTL =   $seconds;
-        return $this;
-    }
-
-    /**
-     * Enable/disable use of Cache Engine
-     * Set temp. TTL (time to live) value for next caching object
-     * @param bool $status
-     * @param int $ttl
-     * @return Memory
-     */
-    public function useCache(bool $status, int $ttl = 0) : self
-    {
-        $this->cacheStatus  =   $status;
-        if($status) {
-            $this->cacheTempTTL =   $ttl    >   0 ? $ttl : $this->cacheTTL;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Finds object in run-time memory, then cache, otherwise calls a supplied callback function which should
-     * return object to be stored in memory
      * @param string $key
      * @param string $instanceOf
-     * @param callable|null $notFound
-     * @return mixed|null
+     * @return Query
      */
-    public function find(string $key, string $instanceOf, callable $notFound = null)
+    public static function Query(string $key, string $instanceOf) : Query
+    {
+        return new Query($key, $instanceOf);
+    }
+
+    /**
+     * @param Query $query
+     * @return mixed|null
+     * @throws CacheException
+     * @throws \Comely\IO\DependencyInjection\Exception\RepositoryException
+     */
+    public function find(Query $query)
     {
         // Check in runtime memory
-        if($this->repo->has($key)) {
-            $pull   =   $this->repo->pull($key);
-            if(is_object($pull) &&  is_a($pull, $instanceOf)) {
+        if($this->repo->has($query->key)) {
+            $pull   =   $this->repo->pull($query->key);
+            if(is_object($pull) &&  is_a($pull, $query->instanceOf)) {
                 return $pull;
             }
         }
 
         // Check in cache
         if(isset($this->cache)) {
-            if($this->cacheStatus   === true) {
-                $cached = $this->cache->get($key);
-                if(is_object($cached)   &&  is_a($cached, $instanceOf)) {
-                    $this->repo->push($cached, $key);
+            if($query->useCache === true) {
+                $cached =   $this->cache->get($query->key);
+                if(is_object($cached)   &&  is_a($cached, $query->instanceOf)) {
+                    $this->repo->push($cached, $query->key); // Save in runtime memory
                     return $cached;
                 }
             }
         }
 
-        if(is_callable($notFound)) {
-            $callBack   =   call_user_func($notFound);
+        // Not found so far, proceed to callback
+        if(is_callable($query->callback)) {
+            $callBack   =   call_user_func($query->callback);
             if(is_object($callBack)) {
-                $this->set($key, $callBack);
+                $this->set($query->key, $callBack, $query->useCache, $query->cacheTTL);
                 return $callBack;
             }
         }
 
-        $this->cacheTempTTL =   0;
         return null;
     }
 
     /**
-     * Sets object in run-time memory and cache engine
      * @param string $key
      * @param $object
+     * @param bool $useCache
+     * @param int $cacheTTL
      * @return bool
+     * @throws \Comely\IO\DependencyInjection\Exception\RepositoryException
      */
-    public function set(string $key, $object) : bool
+    public function set(string $key, $object, bool $useCache = false, int $cacheTTL = 0) : bool
     {
         if(!is_object($object)) {
-            return false;
+            return false; // Memory component doesn't store non-objects
         }
 
+        // Save in runtime memory
         $this->repo->push($object, $key);
+
+        // Save in cache?
         if($this->cache) {
-            if($this->cacheStatus   === true) {
+            if($useCache) {
                 try {
-                    $ttl    =   $this->cacheTempTTL > 0 ? $this->cacheTempTTL : $this->cacheTTL;
-                    $this->cache->set($key, clone $object, $ttl);
+                    $this->cache->set($key, clone $object, $cacheTTL);
                 } catch (CacheException $e) {
                     trigger_error($e->getParsed(), E_USER_WARNING);
                 }
             }
         }
 
-        $this->cacheTempTTL =   0;
         return true;
     }
 }
