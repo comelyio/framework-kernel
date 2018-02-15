@@ -1,13 +1,11 @@
 # Comely Framework Kernel
 
-https://github.com/comelyio/framework-kernel
+A comely kernel for comely frameworks
 
 ## Prerequisites
 
-* **PHP** 7.0+
-* [**Comely IO** Components](https://github.com/comelyio/comely) >= 1.0.0
-* [Comely **Knit** Template Engine](https://github.com/comelyio/knit) >= 1.0.0
-* [Comely **VividShell** CLI component](https://github.com/comelyio/knit) >= 1.0.0
+* **PHP** 7.1+
+* [comelyio/comely](https://github.com/comelyio/comely) >= 2
 
 ## Installation
 
