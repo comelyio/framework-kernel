@@ -10,9 +10,41 @@
  * https://github.com/comelyio/framework-kernel/blob/master/LICENSE
  */
 
+declare(strict_types=1);
+
+namespace Comely\Framework\AppKernel;
+
+use Comely\Framework\Exception\AppKernelException;
+
 /**
- * Created by PhpStorm.
- * User: mfasp
- * Date: 2/16/2018
- * Time: 7:34 AM
+ * Class DateTime
+ * @package Comely\Framework\AppKernel
  */
+class DateTime
+{
+    /** @var null|string */
+    private $timezone;
+
+    /**
+     * @param string $tz
+     * @throws AppKernelException
+     */
+    public function setTimezone(string $tz): void
+    {
+        $zones = \DateTimeZone::listIdentifiers();
+        if (!in_array($tz, $zones)) {
+            throw new AppKernelException('Invalid timezone');
+        }
+
+        $this->timezone = $tz;
+        date_default_timezone_set($tz);
+    }
+
+    /**
+     * @return null|string
+     */
+    public function currentTimezone(): ?string
+    {
+        return $this->timezone;
+    }
+}
