@@ -1,7 +1,7 @@
 {
   "name": "comelyio/framework-kernel",
   "description": "Kernel for Comely Framework",
-  "keywords": ["comely", "comelyio", "kernel", "framework"],
+  "keywords": ["comely", "comelyio", "kernel", "framework", "comely2"],
   "license": "MIT",
   "authors": [
     {
@@ -10,15 +10,12 @@
     }
   ],
   "require": {
-    "php": ">=7.0.0",
-    "comelyio/comely": ">=1.0.2",
-    "comelyio/knit": ">=1.2.0",
-    "comelyio/vivid-shell": ">=0.1"
+    "php": ">=7.1.0",
+    "comelyio/comely": "*"
   },
   "autoload": {
     "psr-4": {
-      "Comely\\Framework\\Kernel\\": "src/Kernel/"
-    },
-    "files": ["src/Kernel.php", "src/KernelException.php"]
+      "Comely\\Framework\\Kernel\\": "src/"
+    }
   }
 }
