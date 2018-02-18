@@ -14,8 +14,10 @@ declare(strict_types=1);
 
 namespace Comely\Framework\AppKernel;
 
+use Comely\Framework\AppKernel;
 use Comely\Framework\Exception\AppKernelException;
 use Comely\IO\FileSystem\Disk\Directory;
+use Comely\IO\FileSystem\Exception\DiskException;
 
 /**
  * Class Directories
@@ -23,26 +25,47 @@ use Comely\IO\FileSystem\Disk\Directory;
  */
 class Directories
 {
-    /** @var null|Directory */
+    /** @var AppKernel */
+    private $kernel;
+    /** @var Directory */
     private $root;
+    /** @var null|Directory */
+    private $config;
     /** @var null|Directory */
     private $cache;
     /** @var null|Directory */
-    private $compiler;
-    /** @var null|Directory */
     private $logs;
+
+    /**
+     * Directories constructor.
+     * @param AppKernel $kernel
+     * @param Directory $root
+     */
+    public function __construct(AppKernel $kernel, Directory $root)
+    {
+        $this->kernel = $kernel;
+        $this->root = $root;
+    }
+
+    /**
+     * @return Directory
+     */
+    public function root(): Directory
+    {
+        return $this->root;
+    }
 
     /**
      * @return Directory
      * @throws AppKernelException
      */
-    public function root(): Directory
+    public function config(): Directory
     {
-        if (!$this->root) {
-            throw new AppKernelException('App root directory is not set');
+        if (!$this->config) {
+            $this->config = $this->dir("config");
         }
 
-        return $this->root;
+        return $this->config;
     }
 
     /**
@@ -52,7 +75,7 @@ class Directories
     public function cache(): Directory
     {
         if (!$this->cache) {
-            throw new AppKernelException('App cache directory is not set');
+            $this->cache = $this->dir("cache", true);
         }
 
         return $this->cache;
@@ -62,23 +85,10 @@ class Directories
      * @return Directory
      * @throws AppKernelException
      */
-    public function compiler(): Directory
-    {
-        if (!$this->compiler) {
-            throw new AppKernelException('App compiler directory is not set');
-        }
-
-        return $this->compiler;
-    }
-
-    /**
-     * @return Directory
-     * @throws AppKernelException
-     */
     public function logs(): Directory
     {
         if (!$this->logs) {
-            throw new AppKernelException('App logs directory is not set');
+            $this->cache = $this->dir("logs", true);
         }
 
         return $this->logs;
@@ -86,32 +96,32 @@ class Directories
 
     /**
      * @param string $prop
-     * @param Directory $directory
+     * @param bool $writable
+     * @return Directory
+     * @throws AppKernelException
      */
-    public function set(string $prop, Directory $directory): void
+    private function dir(string $prop, bool $writable = false): Directory
     {
-        if (!property_exists($this, $prop)) {
-            throw new AppKernelException('Invalid directory property');
+        $directoryPath = $this->kernel->constant("DIR_" . strtoupper($prop));
+        try {
+            $directory = $this->root->dir($directoryPath);
+            if (!$directory->permissions()->read) {
+                throw new AppKernelException(
+                    sprintf('"%s" directory "%s" is not readable', $prop, $directoryPath)
+                );
+            }
+
+            if ($writable && !$directory->permissions()->write) {
+                throw new AppKernelException(
+                    sprintf('"%s" directory "%s" is not writable', $prop, $directoryPath)
+                );
+            }
+        } catch (DiskException $e) {
+            throw new AppKernelException(
+                sprintf('No such "%s" directory found "%s" in app root', $prop, $directoryPath)
+            );
         }
 
-        // No reset root directory
-        if ($prop === "root" && $this->root) {
-            throw new AppKernelException('App root directory already defined');
-        }
-
-        // Permissions check
-        switch ($prop) {
-            case "cache":
-            case "compiler":
-            case "logs":
-                if (!$directory->permissions()->read) {
-                    throw new AppKernelException(sprintf('Directory "%s" is not readable', $prop));
-                } elseif (!$directory->permissions()->write) {
-                    throw new AppKernelException(sprintf('Directory "%s" is not writable', $prop));
-                }
-                break;
-        }
-
-        $this->$prop = $directory;
+        return $directory;
     }
 }
