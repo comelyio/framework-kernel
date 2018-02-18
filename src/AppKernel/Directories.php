@@ -30,9 +30,13 @@ class Directories
     /** @var Directory */
     private $root;
     /** @var null|Directory */
+    private $cache;
+    /** @var null|Directory */
     private $config;
     /** @var null|Directory */
-    private $cache;
+    private $compiler;
+    /** @var null|Directory */
+    private $langs;
     /** @var null|Directory */
     private $logs;
 
@@ -85,10 +89,36 @@ class Directories
      * @return Directory
      * @throws AppKernelException
      */
+    public function compiler(): Directory
+    {
+        if (!$this->compiler) {
+            $this->compiler = $this->dir("compiler", true);
+        }
+
+        return $this->compiler;
+    }
+
+    /**
+     * @return Directory
+     * @throws AppKernelException
+     */
+    public function langs(): Directory
+    {
+        if (!$this->langs) {
+            $this->langs = $this->dir("langs");
+        }
+
+        return $this->langs;
+    }
+
+    /**
+     * @return Directory
+     * @throws AppKernelException
+     */
     public function logs(): Directory
     {
         if (!$this->logs) {
-            $this->cache = $this->dir("logs", true);
+            $this->logs = $this->dir("logs", true);
         }
 
         return $this->logs;
