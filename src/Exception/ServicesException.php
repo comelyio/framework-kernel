@@ -12,14 +12,14 @@
 
 declare(strict_types=1);
 
-namespace Comely\Framework\Exception;
+namespace Comely\Kernel\Exception;
 
-use Comely\Kernel\Exception\ComelyException;
+use Comely\Framework\Exception\AppKernelException;
 
 /**
- * Class AppKernelException
- * @package Comely\Framework\Exception
+ * Class ServicesException
+ * @package Comely\Kernel\Exception
  */
-class AppKernelException extends ComelyException
+class ServicesException extends AppKernelException
 {
 }
