@@ -12,17 +12,17 @@
 
 declare(strict_types=1);
 
-namespace Comely\Framework\AppKernel\Config\App;
+namespace Comely\Framework\AppKernel\Config;
 
-use Comely\Framework\AppKernel\Config\AbstractConfigNode;
 use Comely\Framework\AppKernel\Config\App\Services\Cache;
 use Comely\Framework\AppKernel\Config\App\Services\Cipher;
 use Comely\Framework\AppKernel\Config\App\Services\Mailer;
+use Comely\Framework\AppKernel\Config\App\Services\Sessions;
 use Comely\Framework\AppKernel\Config\App\Services\Translator;
 
 /**
  * Class Services
- * @package Comely\Framework\AppKernel\Config\App
+ * @package Comely\Framework\AppKernel\Config
  * @method null|Cache cache()
  * @method null|Cipher cipher()
  * @method null|Translator translator()
@@ -35,6 +35,8 @@ class Services extends AbstractConfigNode
     private $cipher;
     /** @var null|Cipher */
     private $mailer;
+    /** @var null|Sessions */
+    private $sessions;
     /** @var null|Translator */
     private $translator;
 
@@ -60,6 +62,12 @@ class Services extends AbstractConfigNode
         $mailer = $services["mailer"] ?? null;
         if (is_array($mailer)) {
             $this->mailer = new Mailer($mailer);
+        }
+
+        // Sessions
+        $sessions = $services["sessions"] ?? null;
+        if (is_array($sessions)) {
+            $this->sessions = new Sessions($sessions);
         }
 
         // Translator

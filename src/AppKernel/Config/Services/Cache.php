@@ -46,7 +46,7 @@ class Cache extends AbstractConfigNode
         // Engine
         $engine = $options["engine"] ?? null;
         if (!is_string($engine)) {
-            throw ConfigException::PropError('app.services.cache', 'Property "engine" must be of type string');
+            throw ConfigException::PropError('services.cache', 'Property "engine" must be of type string');
         }
 
         $this->engine = $engine;
@@ -54,7 +54,7 @@ class Cache extends AbstractConfigNode
         // Host
         $host = $options["host"] ?? null;
         if (!is_string($host)) {
-            throw ConfigException::PropError('app.services.cache', 'Property "host" must be of type string');
+            throw ConfigException::PropError('services.cache', 'Property "host" must be of type string');
         }
 
         $this->host = $host;
@@ -62,7 +62,7 @@ class Cache extends AbstractConfigNode
         // Port
         $port = $options["port"] ?? null;
         if (!is_int($port)) {
-            throw ConfigException::PropError('app.services.cache', 'Property "port" must be of type integer');
+            throw ConfigException::PropError('services.cache', 'Property "port" must be of type integer');
         }
 
         $this->port = $port;
@@ -70,7 +70,7 @@ class Cache extends AbstractConfigNode
         // Terminate?
         $terminate = $options["terminate"] ?? null;
         if (!is_bool($terminate)) {
-            throw ConfigException::PropError('app.services.cache', 'Property "terminate" must be "true" or "false"');
+            throw ConfigException::PropError('services.cache', 'Property "terminate" must be "true" or "false"');
         }
 
         $this->terminate = $terminate;

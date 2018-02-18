@@ -38,18 +38,12 @@ class Cipher extends AbstractConfigNode
         // Keys
         $keys = $cipher["keys"] ?? null;
         if (!is_array($keys) && !is_null($keys)) {
-            throw ConfigException::PropError(
-                'app.services.cipher',
-                sprintf('Property "keys" must be of an object or NULL')
-            );
+            throw ConfigException::PropError('services.cipher', 'Property "keys" must be of an object or NULL');
         }
 
         foreach ($keys as $tag => $words) {
             if (!is_string($tag) || !is_string($words)) {
-                throw ConfigException::PropError(
-                    'app.services.cipher',
-                    sprintf('Object contains an invalid key name/words')
-                );
+                throw ConfigException::PropError('services.cipher', 'Object contains an invalid key name/words');
             }
 
             $this->keys[$tag] = $words;

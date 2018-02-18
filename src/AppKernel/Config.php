@@ -25,20 +25,26 @@ use Comely\IO\Yaml\Yaml;
  * Class Config
  * @package Comely\Framework\AppKernel
  * @method string env()
- * @method Config\App app()
  * @method array databases()
  * @method Config\Project project()
+ * @method string timeZone()
+ * @method Config\ErrorHandler errorHandler()
+ * @method Config\Services services()
  */
 class Config extends AppKernel\Config\AbstractConfigNode
 {
     /** @var string */
     private $env;
-    /** @var Config\App */
-    private $app;
     /** @var array */
     private $dbs;
     /** @var Config\Project */
     private $project;
+    /** @var string */
+    private $timeZone;
+    /** @var Config\ErrorHandler */
+    private $errorHandler;
+    /** @var Config\Services */
+    private $services;
 
     /**
      * Config constructor.
@@ -66,13 +72,19 @@ class Config extends AppKernel\Config\AbstractConfigNode
         // Environment
         $this->env = $env;
 
-        // Application
-        $app = $config["app"] ?? null;
-        if (!is_array($app)) {
-            throw ConfigException::PropError('app', 'Primary app node missing');
+        // Timezone
+        $this->timeZone = $config["time_zone"] ?? $config["timeZone"] ?? null;
+        if (!$this->timeZone || !is_string($this->timeZone)) {
+            throw ConfigException::PropError('time_zone', 'Enter a valid timezone (i.e. "Europe/London")');
         }
 
-        $this->app = new AppKernel\Config\App($app);
+        // Error handling
+        $errorHandler = $config["error_handler"] ?? $config["errorHandler"] ?? null;
+        if (!is_array($errorHandler)) {
+            throw ConfigException::PropError('error_handler', 'Node must contain error handling specifications');
+        }
+
+        $this->errorHandler = new AppKernel\Config\ErrorHandler($errorHandler);
 
         // Databases
         $this->dbs = [];
@@ -102,5 +114,13 @@ class Config extends AppKernel\Config\AbstractConfigNode
         }
 
         $this->project = new AppKernel\Config\Project($project);
+
+        // Services
+        $services = $config["services"] ?? null;
+        if (!is_array($services)) {
+            throw ConfigException::PropError('services', 'Node must contain app services');
+        }
+
+        $this->services = new AppKernel\Config\Services($services);
     }
 }
