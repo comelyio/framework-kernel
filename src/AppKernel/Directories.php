@@ -39,6 +39,8 @@ class Directories
     private $langs;
     /** @var null|Directory */
     private $logs;
+    /** @var null|Directory */
+    private $sessions;
 
     /**
      * Directories constructor.
@@ -122,6 +124,19 @@ class Directories
         }
 
         return $this->logs;
+    }
+
+    /**
+     * @return Directory
+     * @throws AppKernelException
+     */
+    public function sessions(): Directory
+    {
+        if (!$this->sessions) {
+            $this->sessions = $this->dir("sessions", true);
+        }
+
+        return $this->sessions;
     }
 
     /**

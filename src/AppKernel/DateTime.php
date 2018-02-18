@@ -27,9 +27,10 @@ class DateTime
 
     /**
      * @param string $tz
+     * @return DateTime
      * @throws AppKernelException
      */
-    public function setTimezone(string $tz): void
+    public function setTimezone(string $tz): self
     {
         $zones = \DateTimeZone::listIdentifiers();
         if (!in_array($tz, $zones)) {
@@ -38,6 +39,7 @@ class DateTime
 
         $this->timezone = $tz;
         date_default_timezone_set($tz);
+        return $this;
     }
 
     /**
