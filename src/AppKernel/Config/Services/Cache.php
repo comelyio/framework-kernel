@@ -49,7 +49,7 @@ class Cache extends AbstractConfigNode
             throw ConfigException::PropError('services.cache', 'Property "engine" must be of type string');
         }
 
-        $this->engine = $engine;
+        $this->engine = strtolower($engine);
 
         // Host
         $host = $options["host"] ?? null;

@@ -25,6 +25,8 @@ use Comely\Framework\AppKernel\Config\App\Services\Translator;
  * @package Comely\Framework\AppKernel\Config
  * @method null|Cache cache()
  * @method null|Cipher cipher()
+ * @method null|Mailer mailer()
+ * @method null|Sessions sessions()
  * @method null|Translator translator()
  */
 class Services extends AbstractConfigNode
@@ -33,7 +35,7 @@ class Services extends AbstractConfigNode
     private $cache;
     /** @var null|Cipher */
     private $cipher;
-    /** @var null|Cipher */
+    /** @var null|Mailer */
     private $mailer;
     /** @var null|Sessions */
     private $sessions;

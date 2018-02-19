@@ -25,7 +25,6 @@ use Comely\IO\Yaml\Yaml;
  * Class Config
  * @package Comely\Framework\AppKernel
  * @method string env()
- * @method array databases()
  * @method Config\Project project()
  * @method string timeZone()
  * @method Config\ErrorHandler errorHandler()
@@ -99,7 +98,7 @@ class Config extends AppKernel\Config\AbstractConfigNode
                     throw ConfigException::DatabaseError($tag, 'Node must contain database credentials');
                 }
 
-                $this->dbs[] = new AppKernel\Config\Database($tag, $db);
+                $this->dbs[$tag] = new AppKernel\Config\Database($tag, $db);
             }
         } else {
             if (!is_null($databases)) {
@@ -122,5 +121,13 @@ class Config extends AppKernel\Config\AbstractConfigNode
         }
 
         $this->services = new AppKernel\Config\Services($services);
+    }
+
+    /**
+     * @return array
+     */
+    public function databases(): array
+    {
+        return $this->dbs;
     }
 }
