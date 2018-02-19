@@ -15,17 +15,25 @@ declare(strict_types=1);
 namespace Comely\Framework;
 
 use Comely\Framework\AppKernel\Config;
+use Comely\Framework\AppKernel\Databases;
 use Comely\Framework\AppKernel\DateTime;
 use Comely\Framework\AppKernel\Directories;
 use Comely\Framework\AppKernel\Services;
+use Comely\Framework\Exception\AppKernelException;
 use Comely\Framework\Exception\BootstrapException;
 use Comely\Framework\Exception\ConfigException;
 use Comely\IO\Cache\Cache;
 use Comely\IO\Cipher\Cipher;
+use Comely\IO\Cipher\Exception\CipherException;
+use Comely\IO\Database\Database;
+use Comely\IO\Database\Exception\DatabaseException;
 use Comely\IO\FileSystem\Disk\Directory;
 use Comely\IO\FileSystem\Exception\DiskException;
 use Comely\IO\Session\ComelySession;
+use Comely\IO\Session\Exception\SessionException;
+use Comely\IO\Translator\Exception\TranslatorException;
 use Comely\IO\Translator\Translator;
+use Comely\Knit\Exception\KnitException;
 use Comely\Knit\Knit;
 
 /**
@@ -43,6 +51,8 @@ class AppKernel
 
     /** @var Config */
     private $config;
+    /** @var Databases */
+    private $databases;
     /** @var DateTime */
     private $dateTime;
     /** @var bool */
@@ -94,6 +104,9 @@ class AppKernel
         // Date Time
         $this->dateTime = (new DateTime())
             ->setTimezone($this->config->timeZone());
+
+        // Databases
+        $this->databases = new Databases($this);
 
         // Services
         $this->services = new Services($this);
@@ -221,9 +234,8 @@ class AppKernel
 
     /**
      * @return Cache
-     * @throws \Comely\IO\Cache\Exception\CacheException
-     * @throws \Comely\IO\Cache\Exception\ConnectionException
-     * @throws \Comely\Kernel\Exception\ServicesException
+     * @throws AppKernelException
+     * @throws CipherException
      */
     public function cache(): Cache
     {
@@ -232,7 +244,8 @@ class AppKernel
 
     /**
      * @return Cipher
-     * @throws \Comely\Kernel\Exception\ServicesException
+     * @throws AppKernelException
+     * @throws CipherException
      */
     public function cipher(): Cipher
     {
@@ -241,9 +254,8 @@ class AppKernel
 
     /**
      * @return Translator
-     * @throws Exception\AppKernelException
-     * @throws \Comely\IO\Translator\Exception\LanguageException
-     * @throws \Comely\Kernel\Exception\ServicesException
+     * @throws AppKernelException
+     * @throws TranslatorException
      */
     public function translator(): Translator
     {
@@ -252,8 +264,8 @@ class AppKernel
 
     /**
      * @return ComelySession
-     * @throws Exception\AppKernelException
-     * @throws \Comely\Kernel\Exception\ServicesException
+     * @throws AppKernelException
+     * @throws SessionException
      */
     public function session(): ComelySession
     {
@@ -262,10 +274,22 @@ class AppKernel
 
     /**
      * @return Knit
-     * @throws Exception\AppKernelException
+     * @throws AppKernelException
+     * @throws KnitException
      */
     public function knit(): Knit
     {
         return $this->services->knit();
+    }
+
+    /**
+     * @param string $tag
+     * @return Database
+     * @throws AppKernelException
+     * @throws DatabaseException
+     */
+    public function db(string $tag = "primary"): Database
+    {
+        return $this->databases->get($tag);
     }
 }
