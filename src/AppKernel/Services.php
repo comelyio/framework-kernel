@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Comely\Framework\AppKernel;
 
 use Comely\Framework\AppKernel;
+use Comely\Framework\Exception\AppKernelException;
 use Comely\IO\Cache\Cache;
 use Comely\IO\Cache\Exception\CacheException;
 use Comely\IO\Cipher\Cipher;
@@ -64,7 +65,6 @@ class Services
      * @return Cache
      * @throws CacheException
      * @throws ServicesException
-     * @throws \Comely\IO\Cache\Exception\ConnectionException
      * @throws CacheException
      */
     public function cache(): Cache
@@ -107,10 +107,9 @@ class Services
     }
 
     /**
-     * @return Translator|null
+     * @return Translator
+     * @throws AppKernelException
      * @throws ServicesException
-     * @throws \Comely\Framework\Exception\AppKernelException
-     * @throws \Comely\IO\Translator\Exception\LanguageException
      * @throws TranslatorException
      */
     public function translator(): Translator
@@ -177,8 +176,8 @@ class Services
 
     /**
      * @return Session
+     * @throws AppKernelException
      * @throws ServicesException
-     * @throws \Comely\Framework\Exception\AppKernelException
      * @throws SessionException
      */
     public function sessions(): Session
@@ -216,8 +215,8 @@ class Services
 
     /**
      * @return ComelySession
+     * @throws AppKernelException
      * @throws ServicesException
-     * @throws \Comely\Framework\Exception\AppKernelException
      * @throws SessionException
      */
     public function comelySession(): ComelySession
@@ -232,7 +231,7 @@ class Services
 
     /**
      * @return Knit
-     * @throws \Comely\Framework\Exception\AppKernelException
+     * @throws AppKernelException
      * @throws KnitException
      */
     public function knit(): Knit
