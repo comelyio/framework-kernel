@@ -19,12 +19,11 @@ use Comely\Framework\Exception\ConfigException;
 /**
  * Class ErrorHandler
  * @package Comely\Framework\AppKernel\Config
- * @method string format()
  */
 class ErrorHandler extends AbstractConfigNode
 {
     /** @var string */
-    public $format;
+    private $format;
 
     /**
      * ErrorHandler constructor.
@@ -38,5 +37,15 @@ class ErrorHandler extends AbstractConfigNode
         if (!$format || !is_string($format)) {
             throw ConfigException::PropError('error_handler.format', 'Invalid format');
         }
+
+        $this->format = $format;
+    }
+
+    /**
+     * @return string
+     */
+    public function format(): string
+    {
+        return $this->format;
     }
 }
