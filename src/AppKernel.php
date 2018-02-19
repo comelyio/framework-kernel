@@ -18,7 +18,10 @@ use Comely\Framework\AppKernel\Config;
 use Comely\Framework\AppKernel\Databases;
 use Comely\Framework\AppKernel\DateTime;
 use Comely\Framework\AppKernel\Directories;
+use Comely\Framework\AppKernel\ErrorHandler;
+use Comely\Framework\AppKernel\Memory;
 use Comely\Framework\AppKernel\Services;
+use Comely\Framework\AppKernel\Singleton;
 use Comely\Framework\Exception\AppKernelException;
 use Comely\Framework\Exception\BootstrapException;
 use Comely\Framework\Exception\ConfigException;
@@ -40,7 +43,7 @@ use Comely\Knit\Knit;
  * Class AppKernel
  * @package Comely\Framework
  */
-class AppKernel
+class AppKernel extends Singleton
 {
     protected const DIR_CONFIG = "config";
     protected const DIR_CACHE = "cache";
@@ -59,18 +62,35 @@ class AppKernel
     private $dev;
     /** @var Directories */
     private $directories;
-
+    /** @var ErrorHandler */
     private $errorHandler;
+    /** @var null|Memory */
     private $memory;
     /** @var Services */
     private $services;
+
+    /**
+     * @param array $options
+     * @param string $env
+     * @return AppKernel
+     * @throws BootstrapException
+     */
+    final public static function Bootstrap(array $options, string $env): self
+    {
+        if (static::$instance) {
+            throw new BootstrapException('AppKernel instance already bootstrapped');
+        }
+
+        self::$instance = new self($options, $env);
+        return self::$instance;
+    }
 
     /**
      * AppKernel constructor.
      * @param array $options
      * @param string $env
      */
-    public function __construct(array $options, string $env)
+    private function __construct(array $options, string $env)
     {
         // Development mode
         $dev = $options["dev"] ?? $dev["development"] ?? null;
@@ -81,7 +101,7 @@ class AppKernel
         $this->dev = $dev;
 
         // Root directory
-        $rootPath = $options["rootPath"] ?? $options["root_path"] ?? null;
+        $rootPath = $options["rootPath"] ?? $options["root_path"] ?? $options["root_dir"] ?? null;
         try {
             $rootDirectory = new Directory(strval($rootPath), null, true);
         } catch (DiskException $e) {
@@ -101,15 +121,14 @@ class AppKernel
 
         $this->configure($loadCachedConfig, $env); // Bootstrap configuration
 
-        // Date Time
+
+        // Components
         $this->dateTime = (new DateTime())
             ->setTimezone($this->config->timeZone());
 
-        // Databases
-        $this->databases = new Databases($this);
-
-        // Services
-        $this->services = new Services($this);
+        $this->errorHandler = new ErrorHandler($this); // Error Handler
+        $this->databases = new Databases($this); // Databases
+        $this->services = new Services($this); // Services
     }
 
     /**
@@ -186,7 +205,7 @@ class AppKernel
     /**
      * @return Config
      */
-    public function config(): Config
+    final public function config(): Config
     {
         return $this->config;
     }
@@ -195,7 +214,7 @@ class AppKernel
      * @param string $const
      * @return mixed
      */
-    public function constant(string $const)
+    final public function constant(string $const)
     {
         return @constant('static::' . $const);
     }
@@ -203,7 +222,7 @@ class AppKernel
     /**
      * @return DateTime
      */
-    public function dateTime(): DateTime
+    final public function dateTime(): DateTime
     {
         return $this->dateTime;
     }
@@ -211,7 +230,7 @@ class AppKernel
     /**
      * @return bool
      */
-    public function dev(): bool
+    final  public function dev(): bool
     {
         return $this->dev;
     }
@@ -219,15 +238,23 @@ class AppKernel
     /**
      * @return Directories
      */
-    public function directories(): Directories
+    final public function directories(): Directories
     {
         return $this->directories;
     }
 
     /**
+     * @return ErrorHandler
+     */
+    final public function errorHandler(): ErrorHandler
+    {
+        return $this->errorHandler;
+    }
+
+    /**
      * @return Services
      */
-    public function services(): Services
+    final public function services(): Services
     {
         return $this->services;
     }
@@ -237,7 +264,7 @@ class AppKernel
      * @throws AppKernelException
      * @throws CipherException
      */
-    public function cache(): Cache
+    final public function cache(): Cache
     {
         return $this->services->cache();
     }
@@ -247,7 +274,7 @@ class AppKernel
      * @throws AppKernelException
      * @throws CipherException
      */
-    public function cipher(): Cipher
+    final public function cipher(): Cipher
     {
         return $this->services->cipher();
     }
@@ -257,7 +284,7 @@ class AppKernel
      * @throws AppKernelException
      * @throws TranslatorException
      */
-    public function translator(): Translator
+    final public function translator(): Translator
     {
         return $this->services->translator();
     }
@@ -267,7 +294,7 @@ class AppKernel
      * @throws AppKernelException
      * @throws SessionException
      */
-    public function session(): ComelySession
+    final public function session(): ComelySession
     {
         return $this->services->comelySession();
     }
@@ -277,7 +304,7 @@ class AppKernel
      * @throws AppKernelException
      * @throws KnitException
      */
-    public function knit(): Knit
+    final public function knit(): Knit
     {
         return $this->services->knit();
     }
@@ -288,8 +315,30 @@ class AppKernel
      * @throws AppKernelException
      * @throws DatabaseException
      */
-    public function db(string $tag = "primary"): Database
+    final public function db(string $tag = "primary"): Database
     {
         return $this->databases->get($tag);
+    }
+
+    /**
+     * @return Memory
+     */
+    final public function memory(): Memory
+    {
+        if ($this->memory) {
+            return $this->memory;
+        }
+
+        // new Memory Instance
+        $this->memory = new Memory();
+
+        // Caching
+        try {
+            $cache = $this->cache();
+            $this->memory->caching($cache);
+        } catch (\Exception $e) {
+        }
+
+        return $this->memory;
     }
 }
