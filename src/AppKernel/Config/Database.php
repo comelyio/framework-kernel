@@ -49,34 +49,52 @@ class Database extends AbstractConfigNode
      */
     public function __construct(string $tag, array $db)
     {
-        $this->driver = $db["driver"] ?? null;
-        if (!is_string($this->driver)) {
+        // Driver
+        $driver = $db["driver"] ?? null;
+        if (!is_string($driver)) {
             throw ConfigException::DatabaseError($tag, 'Invalid driver name');
         }
 
-        $this->host = $db["host"] ?? null;
-        if (!is_string($this->host)) {
+        $this->driver = strtolower($driver);
+
+        // Hostname
+        $host = $db["host"] ?? null;
+        if (!is_string($host)) {
             throw ConfigException::DatabaseError($tag, 'Invalid database hostname');
         }
 
-        $this->port = $db["port"] ?? null;
-        if (!is_int($this->port) && !is_null($this->port)) {
+        $this->host = $host;
+
+        // Port
+        $port = $db["port"] ?? null;
+        if (!is_int($port) && !is_null($port)) {
             throw ConfigException::DatabaseError($tag, 'Port must be a integer or NULL');
         }
 
-        $this->name = $db["name"] ?? null;
-        if (!is_string($this->name)) {
+        $this->port = $port;
+
+        // Name
+        $name = $db["name"] ?? null;
+        if (!is_string($name)) {
             throw ConfigException::DatabaseError($tag, 'Invalid database name');
         }
 
-        $this->username = $db["username"] ?? null;
-        if (!is_string($this->username) && !is_null($this->username)) {
+        $this->name = $name;
+
+        // Username
+        $username = $db["username"] ?? null;
+        if (!is_string($username) && !is_null($username)) {
             throw ConfigException::DatabaseError($tag, 'Username must be a string or NULL');
         }
 
-        $this->password = $db["password"] ?? null;
-        if (!is_string($this->password) && !is_null($this->password)) {
+        $this->username = $username;
+
+        // Password
+        $password = $db["password"] ?? null;
+        if (!is_string($password) && !is_null($password)) {
             throw ConfigException::DatabaseError($tag, 'Password must be a string or NULL');
         }
+
+        $this->password = $password;
     }
 }
