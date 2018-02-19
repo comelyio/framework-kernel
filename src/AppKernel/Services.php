@@ -18,12 +18,16 @@ use Comely\Framework\AppKernel;
 use Comely\IO\Cache\Cache;
 use Comely\IO\Cache\Exception\CacheException;
 use Comely\IO\Cipher\Cipher;
+use Comely\IO\Cipher\Exception\CipherException;
 use Comely\IO\Cipher\Keychain\CipherKey;
 use Comely\IO\Session\ComelySession;
+use Comely\IO\Session\Exception\SessionException;
 use Comely\IO\Session\Session;
 use Comely\IO\Session\Storage\Disk;
+use Comely\IO\Translator\Exception\TranslatorException;
 use Comely\IO\Translator\Translator;
 use Comely\Kernel\Exception\ServicesException;
+use Comely\Knit\Exception\KnitException;
 use Comely\Knit\Knit;
 
 /**
@@ -61,6 +65,7 @@ class Services
      * @throws CacheException
      * @throws ServicesException
      * @throws \Comely\IO\Cache\Exception\ConnectionException
+     * @throws CacheException
      */
     public function cache(): Cache
     {
@@ -106,6 +111,7 @@ class Services
      * @throws ServicesException
      * @throws \Comely\Framework\Exception\AppKernelException
      * @throws \Comely\IO\Translator\Exception\LanguageException
+     * @throws TranslatorException
      */
     public function translator(): Translator
     {
@@ -139,6 +145,7 @@ class Services
     /**
      * @return Cipher
      * @throws ServicesException
+     * @throws CipherException
      */
     public function cipher(): Cipher
     {
@@ -172,6 +179,7 @@ class Services
      * @return Session
      * @throws ServicesException
      * @throws \Comely\Framework\Exception\AppKernelException
+     * @throws SessionException
      */
     public function sessions(): Session
     {
@@ -210,6 +218,7 @@ class Services
      * @return ComelySession
      * @throws ServicesException
      * @throws \Comely\Framework\Exception\AppKernelException
+     * @throws SessionException
      */
     public function comelySession(): ComelySession
     {
@@ -224,6 +233,7 @@ class Services
     /**
      * @return Knit
      * @throws \Comely\Framework\Exception\AppKernelException
+     * @throws KnitException
      */
     public function knit(): Knit
     {
